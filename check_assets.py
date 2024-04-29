@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox, ttk
 import mysql.connector
 
-def check_assets():
+def check_assets(window_box):  # Accepting window_box as a parameter
     def go_back():
         assets_window.destroy()  # Destroy the assets window
 
@@ -43,13 +43,12 @@ def check_assets():
         except mysql.connector.Error as e:
             messagebox.showerror("Error", f"Error: {e}")
 
-    assets_window = tk.Toplevel()
-    assets_window.title("Assets")
-    assets_window.attributes("-fullscreen", True)  # Make the window fullscreen
+    assets_window = tk.Frame(window_box)  # Create a frame within window_box
+    assets_window.pack(fill=tk.BOTH, expand=True)
 
     # Create the back button
     back_button = tk.Button(assets_window, text="Back", command=go_back)
-    back_button.grid(row=0, column=0, padx=10, pady=10, sticky="nw")
+    back_button.pack(side=tk.TOP, padx=10, pady=10, anchor="nw")
 
     # Create the treeview with increased height
     tree = ttk.Treeview(assets_window, columns=("Asset ID", "Asset Types", "Category", "No of Assets", "Purchase Date", "Api Value", "Asset Value"), height=35)
@@ -65,7 +64,7 @@ def check_assets():
 
     # Create vertical scrollbar
     scrollbar = ttk.Scrollbar(assets_window, orient="vertical", command=tree.yview)
-    scrollbar.grid(row=1, column=1, sticky='ns')
+    scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
     tree.configure(yscrollcommand=scrollbar.set)
 
@@ -77,6 +76,6 @@ def check_assets():
     tree.column("Asset Types", width=max(200, remaining_width))
 
     # Place the treeview in the middle of the window
-    tree.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+    tree.pack(fill=tk.BOTH, expand=True)
 
-    assets_window.mainloop()
+    return assets_window  # Return the frame containing the assets window
