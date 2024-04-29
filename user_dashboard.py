@@ -1,9 +1,9 @@
 from tkinter import *
-from PIL import Image, ImageTk, ImageDraw
+from PIL import Image, ImageTk
 import subprocess
-from check_assets import check_assets
-import webbrowser
-import os
+import webbrowser  # Import webbrowser to open URLs
+import check_assets  # Import the check_assets function from check_assets.py
+from add_assets import AddAssetsWindow  # Import AddAssetsWindow class from add_assets.py
 
 class AMS:
     def __init__(self, root):
@@ -44,7 +44,6 @@ class AMS:
         # Adjusting colors based on background image
         self.match_colors()
 
-
         # Menu
         self.MenuLogo = Image.open("images/menu_im.png")
         self.MenuLogo = self.MenuLogo.resize((200, 200), Image.LANCZOS)
@@ -64,11 +63,11 @@ class AMS:
 
         # Create menu buttons
         add_assets_btn = Button(button_frame, text="Add Assets", padx=22, pady=-10, font=('Arial', 14),
-                                command=self.run_api, bg="#9DA0A7")
+                                command=self.open_add_assets, bg="#9DA0A7")
         add_assets_btn.pack(fill=X, padx=10, pady=5, anchor='w')
 
         check_assets_btn = Button(button_frame, text="Check Assets", padx=22, pady=-10, font=('Arial', 14),
-                                  command=check_assets, bg="#9DA0A7")
+                                  command=self.load_check_assets, bg="#9DA0A7")
         check_assets_btn.pack(fill=X, padx=10, pady=5, anchor='w')
 
         statistics_btn = Button(button_frame, text="Statistics", padx=22, pady=-10, font=('Arial', 14),
@@ -87,37 +86,78 @@ class AMS:
                           bg="#9DA0A7")
         exit_btn.pack(fill=X, padx=10, pady=5, anchor='w')
 
+        # Add a square box at the center with transparent background
+        center_x = (root.winfo_screenwidth()) // 2
+        center_y = (root.winfo_screenheight()) // 2
+        self.window_box = Canvas(self.root, bg="SystemButtonFace", highlightthickness=0)
+        self.window_box.create_image(center_x, center_y, image=self.bg_photo)
+        self.window_box.place(x=200, y=70, width=1330, height=1450 // 2)
+
     def match_colors(self):
         # Sample colors from the background image
         # Adjust other elements' colors accordingly
         self.root.config(bg="#9DA0A7")
 
-    def run_api(self):
-        subprocess.Popen(["python", "add_assets.py"])
+    def open_add_assets(self):
+        # Clear any previous content in the window_box
+        self.window_box.delete("all")
+
+        # Create an instance of the AddAssetsWindow within the window_box
+        AddAssetsWindow(self.window_box)
 
     def open_statistics(self):
-        subprocess.Popen(["python", "statistics.py"])
+        # Clear any previous content in the window_box
+        self.window_box.delete("all")
+
+        # Create a frame inside the window_box to embed the "Statistics" window
+        statistics_frame = Frame(self.window_box, bg="white")
+        statistics_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # You can add your "Statistics" GUI elements here within statistics_frame
+        # For example:
+        Label(statistics_frame, text="Statistics Window").pack()
 
     def logout(self):
         self.root.destroy()
         subprocess.Popen(["python", "common_login.py"])
 
     def exit_program(self):
-        root.destroy()  # Close the window
-
+        self.root.destroy()  # Close the window
 
     def show_help_video(self):
-        help_window = Toplevel(self.root)
-        help_window.title("Help")
-        help_window.geometry("800x600")
-        video_url = "https://youtu.be/NOwQy2WTee0?feature=shared"
-        webbrowser.open(video_url)
+        # Clear any previous content in the window_box
+        self.window_box.delete("all")
+
+        # Create a frame inside the window_box to embed the "Help Video" window
+        help_frame = Frame(self.window_box, bg="white")
+        help_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # You can add your "Help Video" GUI elements here within help_frame
+        # For example:
+        Label(help_frame, text="Help Video Window").pack()
 
     def open_about_us(self):
-        # Open the "about_us.py" file directly
-        about_us_file = "about_us.py"
-        subprocess.Popen(["python", about_us_file])
+        # Clear any previous content in the window_box
+        self.window_box.delete("all")
 
+        # Create a frame inside the window_box to embed the "About Us" window
+        about_us_frame = Frame(self.window_box, bg="white")
+        about_us_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # You can add your "About Us" GUI elements here within about_us_frame
+        # For example:
+        Label(about_us_frame, text="About Us Window").pack()
+
+    def load_check_assets(self):
+        # Clear any previous content in the window_box
+        self.window_box.delete("all")
+
+        # Create a frame inside the window_box to embed the "Check Assets" window
+        assets_frame = Frame(self.window_box, bg="white")
+        assets_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        # Load the Check Assets functionality into the assets_frame
+        check_assets.check_assets(assets_frame)
 
 if __name__ == "__main__":
     root = Tk()
